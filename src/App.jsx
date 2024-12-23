@@ -1,4 +1,4 @@
-import './App.css'
+import './index.css'
 import { Canvas, useLoader} from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { Environment } from '@react-three/drei'
@@ -15,8 +15,7 @@ const Model = () => {
 }
 
 const App = () => (
-  <div className="w-full h-screen">
-    <Canvas>
+  <Canvas className="w-full h-full">
       <Suspense fallback={null}>
         <Model />
       <OrbitControls />
@@ -25,7 +24,6 @@ const App = () => (
     <ambientLight color={0xff0000} intensity={0.1} />
     <directionalLight position={[0, 0, 5]} intensity={0.5} />
   </Canvas>
-  </div>
 )
 
 export default App
