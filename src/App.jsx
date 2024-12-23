@@ -1,28 +1,38 @@
 import './index.css'
 import { Canvas, useLoader} from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import { Environment } from '@react-three/drei'
 import { Suspense } from 'react'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
-const Model = () => {
-  const gltf = useLoader(GLTFLoader, './Poimandres.gltf')
+const name = (type) => `PavingStones092_1K-JPG/PavingStones092_1K-JPG_${type}.jpg`;
+
+const Scene = () => {
+  const [colorMap, displacementMap, normalMap, roughnessMap, aoMap] = useLoader(TextureLoader, [name('Color'), name('Displacement'), name('NormalGL'), name('Roughness'), name('AmbientOcclusion')])
   return (
     <>
-      <primitive object={gltf.scene} scale={0.4} />
+    <ambientLight intensity={0.2} />
+    <directionalLight/>
+    <mesh>
+      <sphereGeometry args={[1, 100, 100]}/>
+      <meshStandardMaterial 
+      map={colorMap}
+      displacementScale={0.2}
+      displacementMap={displacementMap}
+      normalMap={normalMap}
+      roughnessMap={roughnessMap}
+      aoMap={aoMap}
+      />
+    </mesh>
     </>
-  )
+  );
 }
 
 const App = () => (
   <Canvas className="w-full h-full">
       <Suspense fallback={null}>
-        <Model />
-      <OrbitControls />
-      <Environment preset="sunset" background />
-    </Suspense>
-    <ambientLight color={0xff0000} intensity={0.1} />
-    <directionalLight position={[0, 0, 5]} intensity={0.5} />
+        <Scene />
+        <OrbitControls autoRotate/>
+      </Suspense>
   </Canvas>
 )
 
