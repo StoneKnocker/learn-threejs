@@ -11,7 +11,7 @@ const Model = () => {
     <Sphere args={[1,32,32]} castShadow>
       <meshPhysicalMaterial color="aqua"/>
     </Sphere>
-    <Plane args={[20,20]} position={[0,-1,0]} receiveShadow rotation={[-Math.PI * -0.5,0,0]}>
+    <Plane args={[20,20]} position={[0,-1,0]} receiveShadow rotation={[-Math.PI * 0.5,0,0]}>
       <meshPhysicalMaterial color="gray"/>
     </Plane>
     </>
@@ -33,7 +33,7 @@ const Lights = () => {
   return (
     <>
     <ambientLight color='aqua'/>
-    <spotLight ref={mainLightRef} {...lightProps}/>
+    <spotLight ref={mainLightRef} {...lightProps} castShadow />
     </>
   )
 }
