@@ -2,7 +2,7 @@ import './index.css'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Stats } from '@react-three/drei'
 import { Suspense } from 'react'
-import { Floor, Fog } from './components'
+import { Floor, Fog, Ghosts } from './components'
 
 const App = () =>{
   return (
@@ -14,6 +14,7 @@ const App = () =>{
       <Fog />
       <Suspense fallback={null}>
         <Floor />
+        <Ghosts />
       </Suspense>
     </Canvas>
   )
