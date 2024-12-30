@@ -1,27 +1,41 @@
 import './index.css'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { Html, OrbitControls, Scroll, ScrollControls } from '@react-three/drei'
+import { Particles } from './components/Particles'
+import { Objects } from './components/Objects'
+import * as THREE from 'three'
+import { Suspense } from 'react'
 
-const App = () =>{
+
+function ScrollBasedAnimation() {
+  useFrame(({ mouse, camera }) => {
+    camera.position.x = THREE.MathUtils.lerp(camera.position.x, mouse.x * 0.5, 0.03)
+    camera.position.y = THREE.MathUtils.lerp(camera.position.y, mouse.y * 0.8, 0.01)
+    camera.position.z = THREE.MathUtils.lerp(camera.position.z, Math.max(4, Math.abs(mouse.x * mouse.y * 8)), 0.01)
+    camera.rotation.y = THREE.MathUtils.lerp(camera.rotation.y, mouse.x * -Math.PI * 0.025, 0.001)
+  })
+
   return (
-    <Canvas
-      camera={{
-        position: [1, 1, 1],
-        fov: 75,
-        near: 0.1,
-        far: 100,
-      }}
-    >
-      <color attach="background" args={[0,0,0]}/>
-      <OrbitControls />
-      <mesh>
-        <ambientLight intensity={0.2}/>
-        <directionalLight position={[10,10,10]}/>
-        <sphereGeometry args={[1, 100, 100]}/>
-        <meshStandardMaterial />
-      </mesh>
-    </Canvas>
+    <ScrollControls pages={3}>
+      <Scroll>
+        <Particles />
+        <Objects />
+      </Scroll>
+      <Scroll html>
+        <Html />
+      </Scroll>
+    </ScrollControls>
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <Canvas dpr={[1, 2]} style={{ mixBlendMode: 'multiply' }}>
+      <ambientLight />
+      <directionalLight color="red" intensity={10} />
+      <Suspense fallback={null}>
+        <ScrollBasedAnimation />
+      </Suspense>
+    </Canvas>
+  )
+}
