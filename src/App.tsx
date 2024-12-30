@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Stats } from '@react-three/drei'
 import { Suspense } from 'react'
 import { Floor, Fog, Ghosts, Graves } from './components'
+import { House } from './components/House/House'
 
 const App = () =>{
   return (
@@ -13,6 +14,7 @@ const App = () =>{
       <directionalLight color="lightcyan" castShadow intensity={1} />
       <Fog />
       <Suspense fallback={null}>
+        <House />
         <Graves />
         <Floor />
         <Ghosts />
