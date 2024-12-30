@@ -1,25 +1,19 @@
 import './index.css'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, Stats } from '@react-three/drei'
+import { Suspense } from 'react'
+import { Floor } from './components'
 
 const App = () =>{
   return (
-    <Canvas
-      camera={{
-        position: [1, 1, 1],
-        fov: 75,
-        near: 0.1,
-        far: 100,
-      }}
-    >
-      <color attach="background" args={[0,0,0]}/>
-      <OrbitControls />
-      <mesh>
-        <ambientLight intensity={0.2}/>
-        <directionalLight position={[10,10,10]}/>
-        <sphereGeometry args={[1, 100, 100]}/>
-        <meshStandardMaterial />
-      </mesh>
+    <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 5, 15] }}>
+      <Stats />
+      <OrbitControls maxPolarAngle={Math.PI * 0.49} minDistance={5} maxDistance={20} makeDefault />
+      <ambientLight intensity={0.5} color="lightcyan" />
+      <directionalLight color="lightcyan" castShadow intensity={1} />
+      <Suspense fallback={null}>
+        <Floor />
+      </Suspense>
     </Canvas>
   )
 }
