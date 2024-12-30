@@ -1,26 +1,50 @@
 import './index.css'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
+import { forwardRef, Suspense, useMemo } from 'react'
+import useRefs from 'react-use-refs'
+import * as THREE from 'three'
+
+const Box = forwardRef(function (props, ref) {
+  const randomFactor = useMemo(() => 0.5 + Math.random() * 3, [])
+  useFrame((state) => (ref.current.position.y = Math.sin(state.clock.getElapsedTime() * randomFactor) * 1.5))
+  return (
+    <mesh ref={ref} {...props}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color="red" />
+    </mesh>
+  )
+})
+Box.displayName = 'Box'
+
+
+function RayCaster() {
+  const [box1Ref, box2Ref, box3Ref] = useRefs()
+  const raycaster = useMemo(() => new THREE.Raycaster(new THREE.Vector3(-3, 0, 0), new THREE.Vector3(1, 0, 0)), [])
+  useFrame(() => {
+    const intersections = raycaster.intersectObjects([box1Ref.current, box2Ref.current, box3Ref.current]);
+    [box1Ref, box2Ref, box3Ref].forEach((ref) => ref.current.material.color.set('red'))
+    for (const intersect of intersections) intersect.object.material.color.set('#0000ff')
+  })
+  return (
+    <>
+      <Box ref={box1Ref} position={[-2, 0, 0]} />
+      <Box ref={box2Ref} />
+      <Box ref={box3Ref} position={[2, 0, 0]} />
+    </>
+  )
+}
 
 const App = () =>{
   return (
-    <Canvas
-      camera={{
-        position: [1, 1, 1],
-        fov: 75,
-        near: 0.1,
-        far: 100,
-      }}
-    >
-      <color attach="background" args={[0,0,0]}/>
-      <OrbitControls />
-      <mesh>
-        <ambientLight intensity={0.2}/>
-        <directionalLight position={[10,10,10]}/>
-        <sphereGeometry args={[1, 100, 100]}/>
-        <meshStandardMaterial />
-      </mesh>
-    </Canvas>
+    <Canvas dpr={[1, 2]}>
+    <color attach="background" args={['black']} />
+    <OrbitControls makeDefault />
+    <ambientLight />
+    <Suspense fallback={null}>
+      <RayCaster />
+    </Suspense>
+  </Canvas>
   )
 }
 
