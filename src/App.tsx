@@ -26,16 +26,26 @@ const particleTextures = [
 const palette = colors[Math.floor(Math.random() * colors.length)]
 
 function Particles() {
-  const { count, size, positionFactor, textureType, rotationSpeed } = useControls({
+  const { count, size, positionFactor, textureType, rotationSpeed,waveFactor } = useControls({
     textureType: { value: 0, min: 0, max: 12, step: 1 },
     count: { value: 2000, min: 1, max: 10000 },
     size: { value: 2, min: 1, max: 20 },
     positionFactor: { value: 60, min: 5, max: 200 },
     rotationSpeed: 0.1,
+    waveFactor: { value: 5, min: 1, max: 500 },
   })
   const particleTexture = useTexture(particleTextures[textureType])
   const particlesRef = useRef()
-  useFrame((state) => (particlesRef.current.rotation.y = state.clock.getElapsedTime() * rotationSpeed))
+  useFrame(({ clock }) => {
+    const elapsedTime = clock.getElapsedTime()
+    particlesRef.current.rotation.x = elapsedTime * rotationSpeed
+    for (let i = 0; i < count; i++) {
+      let i3 = i * 3
+      const x = particlesRef.current.geometry.attributes.position.array[i3]
+      particlesRef.current.geometry.attributes.position.array[i3 + 1] = Math.sin(elapsedTime + x) * waveFactor
+    }
+    particlesRef.current.geometry.attributes.position.needsUpdate = true
+  })
   return (
     <Points ref={particlesRef} limit={10000}>
       <pointsMaterial
